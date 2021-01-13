@@ -2,7 +2,7 @@
 Ismat - Engenheria Informática 1º Ano
 Fundamentos de Programação - Prof. Francisco Pereira
 Leandro Fonseca
-04/01/2021 - 20:39
+03/01/2021 - 23:27
 Resumo: Programa com menus com 2 jogos
 Inputs:
 Outputs:
@@ -50,7 +50,7 @@ Outputs:
 #define TEXT_PENALTI_PHASE2_LINE1 "\n\t ___________________________"
 #define TEXT_PENALTI_PHASE2_LINE2 "\n\t |            O            |"
 #define TEXT_PENALTI_PHASE2_LINE3 "\n\t |           \\|/           |"
-#define TEXT_PENALTI_PHASE2_LINE4 "\n\t |           / \\          |"
+#define TEXT_PENALTI_PHASE2_LINE4 "\n\t |           / \\           |"
 #define TEXT_PENALTI_PHASE2_LINE5 "\n\t |                         |"
 #define TEXT_PENALTI_PHASE2_LINE6 "\n\t |                         |"
 
@@ -73,12 +73,13 @@ Outputs:
 #define TEXT_PENALTI_PHASE6_LINE3 "\n\t |                         |"
 #define TEXT_PENALTI_PHASE6_LINE4 "\n\t |                    /    |"
 #define TEXT_PENALTI_PHASE6_LINE5 "\n\t |                 >--O    |"
-#define TEXT_PENALTI_PHASE6_LINE6 "\n\t |                    \\   |"
+#define TEXT_PENALTI_PHASE6_LINE6 "\n\t |                    \\    |"
 
 
-#define TEXT_PENALTI_SCORE "%s | %d - %d | CPU"
+#define TEXT_PENALTI_SCORE "\n%s | %d - %d | CPU"
 #define TEXT_PENALTI_INPUT "\nEscolha o nome do seu clube: "
 #define TEXT_PENALTI_CHOICE "\nEscolha uma posicao para rematar (1-Canto Superior Esquerdo 2-Central Superior 3-Canto Superior Direito 4-Canto Inferior Esquerdo 5-Remate a Figura 6-Canto Inferior Direito): "
+#define TEXT_CONTINUE_OPTION "\nDeseja continuar a jogar(s-Sim, n-Não): "
 
 
 void printMenu()
@@ -153,6 +154,21 @@ void printBaliza(int intPhase)
     }
 }
 
+int checkContinue()
+{
+    char chrCheckContinue;
+    int intContinue;
+    printf(TEXT_CONTINUE_OPTION);
+    scanf(" %c", &chrCheckContinue);
+
+    if(chrCheckContinue = 's'){
+        intContinue = 1;
+    }else if (chrCheckContinue = 'n'){
+        intContinue = 0;
+    }
+    return intContinue;
+}
+
 void gameHiLow()
 {
     int intToGuess, intFailedCounter, intUserResult;
@@ -179,29 +195,38 @@ void gameHiLow()
 
 void gamePenalti()
 {
-    char chrClubName[3];
-    int intScoreUser = 0, intScoreCpu = 0, intUserChoice, intCpuChoice;
+    char chrClubName[10] = "\0";
+    int intScoreUser = 0, intScoreCpu = 0, intUserChoice, intCpuChoice, intFlag = 1;
     srand(time(NULL));
 
     printf(TEXT_PENALTI_INPUT);
-    scanf(" %s", chrClubName);
+    scanf("%s", chrClubName);
 
-    while((intScoreUser - intScoreCpu <= 3) || (intScoreCpu-intScoreUser <= 3))
+    while(intFlag != 0)
     {
         intUserChoice = 0;
         intCpuChoice = rand() % 6 + 1;
-        printf(TEXT_PENALTI_SCORE);
+        printf(TEXT_PENALTI_SCORE, chrClubName, intScoreUser, intScoreCpu);
         printBaliza(intUserChoice);
 
         printf(TEXT_PENALTI_CHOICE);
         scanf("%d", &intUserChoice);
 
-        if(intUserChoice != intCpuChoice)
+        if(intUserChoice == intCpuChoice)
         {
-              intScoreUser += 1;
+            intScoreCpu += 1;
+        }else
+        {
+            intScoreUser += 1;
         }
 
-        printBaliza(intUserChoice);
+        printBaliza(intCpuChoice);
+        printf(TEXT_PENALTI_SCORE, chrClubName, intScoreUser, intScoreCpu);
+        if ((intScoreCpu >= 5) || (intScoreUser >=5))
+        {
+            intFlag = 0;
+        }
+        intFlag = checkContinue();
     }
 }
 
